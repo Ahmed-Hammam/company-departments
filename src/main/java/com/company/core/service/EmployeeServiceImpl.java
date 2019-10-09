@@ -1,5 +1,6 @@
 package com.company.core.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,11 @@ public class EmployeeServiceImpl implements EmployeeService{
 		Optional<Department> optionalDepartment = departmentRepository.findById(dto.getDepartment().getId());
 		Assert.isTrue(optionalDepartment.isPresent(), "Invalid department");
 		return Optional.of(employeeRepository.save(new Employee(dto.getName(),dto.getSalary(),optionalDepartment.get()))); //TODO : mapper
+	}
+
+	@Override
+	public Optional<List<Employee>> getAllEmployeesOrderedBySalary() {
+		return employeeRepository.findAllByOrderBySalaryAsc();
 	}
 
 }
