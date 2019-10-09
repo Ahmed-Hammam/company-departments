@@ -34,6 +34,14 @@ public class DepartmentController {
 	// https://www.callicoder.com/spring-boot-rest-api-tutorial-with-mysql-jpa-hibernate/
 	//https://howtodoinjava.com/spring-boot2/h2-database-example/
 	
+	//TODO : refactor sort implementation like dzone example 
+	//TODO : check which is better @NamedQuery or @Query
+	//TODO : validate using exceptions and edit message.prperties
+	//TODO : refactor code and avoid nullPointer if .map() contains null obj at controller
+	//TODO : provide log
+	//TODO : complete CRUD operation
+	//TODO : connection pool implementation	
+	
 	@Autowired
 	private DepartmentService departmentService;
 	
