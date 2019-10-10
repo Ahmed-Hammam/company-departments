@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.core.dto.DepartmentDTO;
 import com.company.core.dto.EmployeeDTO;
+import com.company.core.dto.ResponseDTO;
 import com.company.core.entity.OrderParams;
+import com.company.core.exception.BusinessException;
 import com.company.core.exception.RestValidator;
 import com.company.core.service.EmployeeService;
 
@@ -28,26 +30,33 @@ public class EmployeeController {
 	private EmployeeService employeeService;
 	
 	@PostMapping
-	public ResponseEntity<EmployeeDTO> addEmployee(@Valid @RequestBody EmployeeDTO dto) {
+	public ResponseEntity<ResponseDTO> addEmployee(@Valid @RequestBody EmployeeDTO dto) {
+		long start = System.currentTimeMillis();
 		RestValidator.validatePostRequest(dto);
-		return employeeService.addEmployee(dto).map(e->{
-			return new EmployeeDTO(e.getId(), e.getName(), e.getSalary(), new DepartmentDTO(e.getDepartment().getId(),e.getDepartment().getName()));
-		}).map(ResponseEntity::ok)
-				.orElseThrow(() -> new RuntimeException("Invalid data !, please provide a employee details ."));
+		EmployeeDTO empDTO = employeeService.addEmployee(dto).map(e->{
+			return new EmployeeDTO(e.getId(), e.getName(), e.getSalary(), 
+					new DepartmentDTO(e.getDepartment().getId(),e.getDepartment().getName()));
+		}).orElseThrow(() -> new BusinessException("COMPANY008"));
+		long end = System.currentTimeMillis();
+		ResponseDTO response = new ResponseDTO(empDTO, end-start);
+		return ResponseEntity.ok(response);
 	}
 	
 	//A simple report that displays all employees sorted by salary.
 	@GetMapping
-	public ResponseEntity<List<EmployeeDTO>> emplyeesReport(
+	public ResponseEntity<ResponseDTO> emplyeesReport(
 			@RequestParam(required=true , name="orderBy") String orderBy) {
-		RestValidator.validateGetWithOrderParams(orderBy,OrderParams.EMPLOYEES_COUNT);
-		return employeeService.getAllEmployeesOrderedBySalary()
+		long start = System.currentTimeMillis();
+		RestValidator.validateGetWithOrderParams(orderBy,OrderParams.EMPLOYEE_SALARY);
+		List<EmployeeDTO> empDTOs = employeeService.getAllEmployeesOrderedBySalary()
 				.map(employees->{
 					return employees.stream()
 							.map(e-> new EmployeeDTO(e.getId(), e.getName(),e.getSalary(),
 									new DepartmentDTO(e.getDepartment().getId(), e.getDepartment().getName())))
 							.collect(Collectors.toList());
-				}).map(ResponseEntity::ok)
-				.orElseThrow(() -> new RuntimeException("Invalid data !, please provide a employee details ."));
+				}).orElseThrow(() -> new BusinessException("COMPANY008"));
+		long end = System.currentTimeMillis();
+		ResponseDTO response = new ResponseDTO(empDTOs, end-start);
+		return ResponseEntity.ok(response);
 	}
 }

@@ -1,6 +1,7 @@
 package com.company.core.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,14 @@ public class DepartmentServiceImpl implements DepartmentService{
 	@Override
 	public Optional<Department> addDepartment(DepartmentDTO dto) {
 		isValid(dto);
-		return Optional.of(departmentRepo.save(new Department(dto.getName()))); //TODO: mapper
+		if(Objects.nonNull(departmentRepo.findByName(dto.getName())))
+			throw new BusinessException("COMPANY009");
+		
+		return Optional.of(departmentRepo.save(new Department(dto.getName()))); 
 	}
 
 	@Override
-	public Optional<List<?>> getDepartmentsOrderedByEmployeesCount() {
+	public Optional<List<Object[]>> getDepartmentsOrderedByEmployeesCount() {
 		return employeeRepo.getDepartmentsOrderByEmployeesCount();
 	}
 

@@ -9,5 +9,5 @@ import com.company.core.entity.Department;
 public interface DepartmentService {
 
 	Optional<Department> addDepartment(DepartmentDTO dto);
-	Optional<List<?>> getDepartmentsOrderedByEmployeesCount();
+	Optional<List<Object[]>> getDepartmentsOrderedByEmployeesCount();
 }

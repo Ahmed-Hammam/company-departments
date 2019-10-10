@@ -5,8 +5,7 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class DepartmentReportDTO {
-
-	private String name;
-	private Long employeesCount;
+public class ResponseDTO {
+	private Object data;
+	private long execTime;
 }

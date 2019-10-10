@@ -1,5 +1,7 @@
 package com.company.core.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +14,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Entity
-public class Employee {
+public class Employee implements Serializable{
+
+	private static final long serialVersionUID = 7917474017048055708L;
 
 	@Id @GeneratedValue private Long id;
 	
