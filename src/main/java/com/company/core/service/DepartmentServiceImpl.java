@@ -5,10 +5,11 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import com.company.core.dto.DepartmentDTO;
 import com.company.core.entity.Department;
+import com.company.core.exception.BusinessException;
 import com.company.core.repository.DepartmentRepository;
 import com.company.core.repository.EmployeeRepository;
 
@@ -23,7 +24,7 @@ public class DepartmentServiceImpl implements DepartmentService{
 	
 	@Override
 	public Optional<Department> addDepartment(DepartmentDTO dto) {
-		Assert.hasText(dto.getName(), "Name should contain any text");
+		isValid(dto);
 		return Optional.of(departmentRepo.save(new Department(dto.getName()))); //TODO: mapper
 	}
 
@@ -32,4 +33,8 @@ public class DepartmentServiceImpl implements DepartmentService{
 		return employeeRepo.getDepartmentsOrderByEmployeesCount();
 	}
 
+	private void isValid(DepartmentDTO dto) throws BusinessException{
+		if(!StringUtils.hasText(dto.getName()))
+			throw new BusinessException("COMPANY003");
+	}
 }

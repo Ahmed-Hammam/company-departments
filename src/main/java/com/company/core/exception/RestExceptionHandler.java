@@ -23,14 +23,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler{
 	@ExceptionHandler({Exception.class})
 	protected ResponseEntity<Object> handleGeneralException(Exception e, WebRequest webRequest){
 		LOG.error("general exception occured");
-		String errorMessage = env.getProperty("MWASALATY00000");
-		ErrorResource errorResource = new ErrorResource("MWASALATY00000", errorMessage);
+		String errorMessage = env.getProperty("COMPANY00000");
+		ErrorResource errorResource = new ErrorResource("COMPANY00000", errorMessage);
 		return handleExceptionInternal(e, errorResource, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, webRequest);
 	}
 	
 	@ExceptionHandler({BusinessException.class})
 	protected ResponseEntity<Object> handleMwasalatyException(Exception e,WebRequest webRequest){
-		LOG.error("mwasalty exception occured");
+		LOG.error("custom exception occured");
+		LOG.error(e.getMessage());
 		BusinessException exception = (BusinessException)e;
 		String errorMessage = null;
 		
@@ -41,7 +42,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler{
 			errorMessage = env.getProperty(exception.getErrorCode());
 		
 		if(null == errorMessage)
-			errorMessage = env.getProperty("MWASALATY00000");
+			errorMessage = env.getProperty("COMPANY00000");
 		
 		ErrorResource errorResource = new ErrorResource(exception.getErrorCode(),errorMessage);	// JSON that will be returned
 		return handleExceptionInternal(exception, errorResource, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, webRequest);

@@ -1,15 +1,17 @@
 package com.company.core.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import com.company.core.dto.EmployeeDTO;
 import com.company.core.entity.Department;
 import com.company.core.entity.Employee;
+import com.company.core.exception.BusinessException;
 import com.company.core.repository.DepartmentRepository;
 import com.company.core.repository.EmployeeRepository;
 
@@ -24,11 +26,8 @@ public class EmployeeServiceImpl implements EmployeeService{
 	
 	@Override
 	public Optional<Employee> addEmployee(EmployeeDTO dto) {
-		Assert.hasText(dto.getName(), "invalid employee name");
-		Assert.isTrue(dto.getSalary()>1000, "invalid employee salary"); //TODO : handle to custom exception using @ControllerAdvice
-		Assert.isTrue(dto.getDepartment() != null && dto.getDepartment().getId() != null, "invalid department");
+		isValid(dto);
 		Optional<Department> optionalDepartment = departmentRepository.findById(dto.getDepartment().getId());
-		Assert.isTrue(optionalDepartment.isPresent(), "Invalid department");
 		return Optional.of(employeeRepository.save(new Employee(dto.getName(),dto.getSalary(),optionalDepartment.get()))); //TODO : mapper
 	}
 
@@ -37,4 +36,15 @@ public class EmployeeServiceImpl implements EmployeeService{
 		return employeeRepository.findAllByOrderBySalaryAsc();
 	}
 
+	private void isValid(EmployeeDTO dto) throws BusinessException{
+		if(!StringUtils.hasText(dto.getName()))
+			throw new BusinessException("COMPANY004");
+		if(dto.getSalary() < 1000)
+			throw new BusinessException("COMPANY005");
+		if(Objects.isNull(dto.getDepartment()) || Objects.isNull(dto.getDepartment().getId()))
+			throw new BusinessException("COMPANY006");
+		boolean exists = departmentRepository.existsById(dto.getDepartment().getId());
+		if(!exists)
+			throw new BusinessException("COMPANY007");
+	}
 }

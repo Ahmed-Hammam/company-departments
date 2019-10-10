@@ -7,7 +7,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.core.dto.DepartmentDTO;
 import com.company.core.dto.EmployeeDTO;
+import com.company.core.entity.OrderParams;
+import com.company.core.exception.RestValidator;
 import com.company.core.service.EmployeeService;
 
 @RequestMapping("/v0/api/employees")
@@ -28,7 +29,7 @@ public class EmployeeController {
 	
 	@PostMapping
 	public ResponseEntity<EmployeeDTO> addEmployee(@Valid @RequestBody EmployeeDTO dto) {
-		Assert.notNull(dto, "invalid request data");
+		RestValidator.validatePostRequest(dto);
 		return employeeService.addEmployee(dto).map(e->{
 			return new EmployeeDTO(e.getId(), e.getName(), e.getSalary(), new DepartmentDTO(e.getDepartment().getId(),e.getDepartment().getName()));
 		}).map(ResponseEntity::ok)
@@ -38,7 +39,8 @@ public class EmployeeController {
 	//A simple report that displays all employees sorted by salary.
 	@GetMapping
 	public ResponseEntity<List<EmployeeDTO>> emplyeesReport(
-			@RequestParam(required=true , name="orderBy") String order) {
+			@RequestParam(required=true , name="orderBy") String orderBy) {
+		RestValidator.validateGetWithOrderParams(orderBy,OrderParams.EMPLOYEES_COUNT);
 		return employeeService.getAllEmployeesOrderedBySalary()
 				.map(employees->{
 					return employees.stream()
