@@ -1,7 +1,10 @@
 package com.company.core.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -22,8 +25,14 @@ import com.company.core.dto.ResponseDTO;
 import com.company.core.entity.Department;
 import com.company.core.entity.OrderParams;
 import com.company.core.exception.BusinessException;
-import com.company.core.exception.RestValidator;
+import com.company.core.mapper.DepartmentMapper;
+import com.company.core.mapper.DepartmentReportMapper;
 import com.company.core.service.DepartmentService;
+import com.company.core.util.ResultHandler;
+import com.company.core.validator.GetWithParamsValidaor;
+import com.company.core.validator.IRestValidator;
+import com.company.core.validator.PostValidator;
+import com.company.core.validator.RestValidator;
 
 @RequestMapping("/v0/api/departments")
 @RestController
@@ -53,14 +62,18 @@ public class DepartmentController {
 	
 	@PostMapping(consumes = "application/json")
 	public ResponseEntity<ResponseDTO> addDepartment(@Valid @RequestBody DepartmentDTO dto) {
-		long start = System.currentTimeMillis();
+		/*long start = System.currentTimeMillis();
 		RestValidator.validatePostRequest(dto);
 		DepartmentDTO depDTO = departmentService.addDepartment(dto)
 				.map(e -> {return new DepartmentDTO(e.getId(),e.getName());})
 				.orElseThrow(() -> new BusinessException("COMPANY008"));
 		long end = System.currentTimeMillis();
 		ResponseDTO response = new ResponseDTO(depDTO, end-start);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(response);*/
+		return ResponseEntity.ok(new ResultHandler<DepartmentDTO, Department, ResponseDTO,Void>()
+				.doBusinessLogic(dto, departmentService.addDepartment(dto), 
+						DepartmentMapper.mapEntitytoDTO(), new PostValidator(),"COMPANY008", null)
+				.apply(dto)); 
 	}
 	
 	//A simple report that displays all departments sorted by employees count.
@@ -70,7 +83,7 @@ public class DepartmentController {
 			@RequestParam(name="page", defaultValue = "1", required=false) int page,
 			@RequestParam(name="size", defaultValue = "10", required=false) int size){
 		
-		long start = System.currentTimeMillis();
+		/*long start = System.currentTimeMillis();
 		RestValidator.validateGetWithOrderParams(orderBy,OrderParams.EMPLOYEES_COUNT);
 		
 		Optional<List<Object[]>> optionalDepartments = 
@@ -89,13 +102,12 @@ public class DepartmentController {
 		}).orElseThrow(() -> new BusinessException("COMPANY008"));
 		long end = System.currentTimeMillis();
 		ResponseDTO response = new ResponseDTO(depReport, end-start);
-		return ResponseEntity.ok(response);
-		/*return departmentService.getDepartmentsOrderedByEmployeesCount()
-				.map(departments ->{return departments.stream()
-						.map(e-> new DepartmentDTO(((Department) e).getId(), 
-							((Department) e).getName())).collect(Collectors.toList());})
-				.map(ResponseEntity::ok)
-				.orElseThrow(() -> new BusinessException("COMPANY008"));*/
+		return ResponseEntity.ok(response);*/
+		List<DepartmentReportDTO> depReport = new ArrayList<>();
+		return ResponseEntity.ok(new ResultHandler<List<DepartmentReportDTO>, List<Object[]>, 
+				ResponseDTO,String>().doBusinessLogic(orderBy,depReport, departmentService.getDepartmentsOrderedByEmployeesCount(), 
+						DepartmentReportMapper.mapEntitytoDTO(), new GetWithParamsValidaor()
+						,"COMPANY008", OrderParams.EMPLOYEES_COUNT).apply(depReport)); 
 	}
 	
 }

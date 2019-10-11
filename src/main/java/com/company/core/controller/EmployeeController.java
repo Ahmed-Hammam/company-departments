@@ -19,8 +19,8 @@ import com.company.core.dto.EmployeeDTO;
 import com.company.core.dto.ResponseDTO;
 import com.company.core.entity.OrderParams;
 import com.company.core.exception.BusinessException;
-import com.company.core.exception.RestValidator;
 import com.company.core.service.EmployeeService;
+import com.company.core.validator.RestValidator;
 
 @RequestMapping("/v0/api/employees")
 @RestController

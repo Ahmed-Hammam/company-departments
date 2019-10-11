@@ -1,8 +1,9 @@
-package com.company.core.exception;
+package com.company.core.validator;
 
 import java.util.Objects;
 
 import com.company.core.entity.OrderParams;
+import com.company.core.exception.BusinessException;
 
 public class RestValidator {
 

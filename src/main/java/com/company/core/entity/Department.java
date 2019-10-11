@@ -25,7 +25,7 @@ public class Department implements Serializable{
 		this.name = name;
 	}
 	
-	@Id @GeneratedValue(strategy=GenerationType.IDENTITY) 
+	@Id @GeneratedValue(strategy=GenerationType.AUTO) 
 	private Long id;
 	@Column(name="name",nullable=false,unique=true)
 	private String name;
