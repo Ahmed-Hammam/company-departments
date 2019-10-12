@@ -16,6 +16,8 @@ import com.company.core.repository.DepartmentRepository;
 import com.company.core.repository.EmployeeRepository;
 import com.company.core.util.CustomStringUtils;
 
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
 
@@ -27,13 +29,17 @@ public class EmployeeServiceImpl implements EmployeeService{
 	
 	@Override
 	public Optional<Employee> addEmployee(EmployeeDTO dto) {
+		log.info("performing add new department ...");
 		isValid(dto);
+		log.info("valid employee data, checking if assigned employee's department exist !");
 		Optional<Department> optionalDepartment = departmentRepository.findById(dto.getDepartment().getId());
+		log.info("adding new employee to department {}",optionalDepartment.get());
 		return Optional.of(employeeRepository.save(new Employee(dto.getName(),dto.getSalary(),optionalDepartment.get()))); //TODO : mapper
 	}
 
 	@Override
 	public Optional<List<Employee>> getAllEmployeesOrderedBySalary() {
+		log.info("retreiving all employees ordered by employees salary.");
 		return employeeRepository.findAllByOrderBySalaryAsc();
 	}
 

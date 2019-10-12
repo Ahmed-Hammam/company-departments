@@ -15,6 +15,9 @@ import com.company.core.repository.DepartmentRepository;
 import com.company.core.repository.EmployeeRepository;
 import com.company.core.util.CustomStringUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class DepartmentServiceImpl implements DepartmentService{
 
@@ -26,7 +29,9 @@ public class DepartmentServiceImpl implements DepartmentService{
 	
 	@Override
 	public Optional<Department> addDepartment(DepartmentDTO dto) {
+		log.info("performing add new department ...");
 		isValid(dto);
+		log.info("valid department data, checking if another department with same name already exist !");
 		if(Objects.nonNull(departmentRepo.findByName(dto.getName())))
 			throw new BusinessException("COMPANY009");
 		
@@ -35,6 +40,7 @@ public class DepartmentServiceImpl implements DepartmentService{
 
 	@Override
 	public Optional<List<Object[]>> getDepartmentsOrderedByEmployeesCount() {
+		log.info("retreiving all departments ordered by employees count.");
 		return employeeRepo.getDepartmentsOrderByEmployeesCount();
 	}
 

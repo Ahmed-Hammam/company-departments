@@ -27,7 +27,9 @@ import com.company.core.service.DepartmentService;
 import com.company.core.util.ResultHandler;
 
 import io.swagger.annotations.ApiImplicitParam;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequestMapping("/v0/api/departments")
 @RestController
 public class DepartmentController {
@@ -35,6 +37,7 @@ public class DepartmentController {
 	// http://localhost:8080/swagger-ui.html
 	// http://localhost:8080/h2
 	
+	// https://www.mkyong.com/spring-boot/spring-rest-validation-example/
 	// https://www.javadevjournal.com/spring-boot/spring-boot-hikari/
 	// https://dzone.com/articles/conditional-pagination-and-sorting-using-restful-w
 	// http://progressivecoder.com/advanced-swagger-configuration-with-spring-boot/
@@ -43,12 +46,11 @@ public class DepartmentController {
 	// https://stackoverflow.com/questions/25486583/how-to-use-orderby-with-findall-in-spring-data
 	// https://www.callicoder.com/spring-boot-rest-api-tutorial-with-mysql-jpa-hibernate/
 	// https://howtodoinjava.com/spring-boot2/h2-database-example/
-	
-//	TODO : refactor sort implementation like dzone example 
+	// https://stackoverflow.com/questions/17431312/difference-between-join-and-join-fetch-in-hibernate
+		
+	//TODO : refactor sort implementation like dzone example 
 	//TODO : provide log
 	//TODO : complete CRUD operation
-	//TODO ** check swagger
-	//https://www.mkyong.com/spring-boot/spring-rest-validation-example/
 	
 	@Autowired
 	private DepartmentService departmentService;
@@ -63,6 +65,7 @@ public class DepartmentController {
 		long end = System.currentTimeMillis();
 		ResponseDTO response = new ResponseDTO(depDTO, end-start);
 		return ResponseEntity.ok(response);*/
+		log.info("receiving request for adding new department with payload {}",dto);
 		return ResponseEntity.ok(new ResultHandler<DepartmentDTO, Department, ResponseDTO,Void>()
 				.doBusinessLogic(dto, departmentService.addDepartment(dto), 
 						DepartmentMapper.mapEntitytoDTO(), 
@@ -101,6 +104,7 @@ public class DepartmentController {
 		long end = System.currentTimeMillis();
 		ResponseDTO response = new ResponseDTO(depReport, end-start);
 		return ResponseEntity.ok(response);*/
+		log.info("receiving request for generating departments report ordered by {}",orderBy);
 		List<DepartmentReportDTO> depReport = new ArrayList<>();
 		return ResponseEntity.ok(new ResultHandler<List<DepartmentReportDTO>, List<Object[]>, 
 				ResponseDTO,String>().doBusinessLogic(orderBy,depReport, departmentService.getDepartmentsOrderedByEmployeesCount(), 

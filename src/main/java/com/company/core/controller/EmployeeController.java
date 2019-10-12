@@ -25,7 +25,9 @@ import com.company.core.service.EmployeeService;
 import com.company.core.util.ResultHandler;
 
 import io.swagger.annotations.ApiImplicitParam;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequestMapping("/v0/api/employees")
 @RestController
 public class EmployeeController {
@@ -44,6 +46,7 @@ public class EmployeeController {
 		long end = System.currentTimeMillis();
 		ResponseDTO response = new ResponseDTO(empDTO, end-start);
 		return ResponseEntity.ok(response);*/
+		log.info("receiving request for adding new department with payload {}",dto);
 		return ResponseEntity.ok(new ResultHandler<EmployeeDTO, Employee, ResponseDTO,Void>()
 				.doBusinessLogic(dto, employeeService.addEmployee(dto), 
 						EmployeeMapper.mapEntitytoDTO(), 
@@ -74,6 +77,7 @@ public class EmployeeController {
 		long end = System.currentTimeMillis();
 		ResponseDTO response = new ResponseDTO(empDTOs, end-start);
 		return ResponseEntity.ok(response);*/
+		log.info("receiving request for generating employees report ordered by {}",orderBy);
 		List<EmployeeDTO> empDTOs = new ArrayList<>();
 		return ResponseEntity.ok(new ResultHandler<List<EmployeeDTO>, List<Employee>, 
 				ResponseDTO,String>().doBusinessLogic(orderBy,empDTOs, 
