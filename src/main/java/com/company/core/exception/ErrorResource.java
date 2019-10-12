@@ -11,7 +11,6 @@ public class ErrorResource {
 	
 	private String errorMessage;
 	
-	// to tell jackson to ignore this attribute during serialization if its value is null
 	@JsonInclude(JsonInclude.Include.NON_NULL) 
 	private String errorDetail;
 

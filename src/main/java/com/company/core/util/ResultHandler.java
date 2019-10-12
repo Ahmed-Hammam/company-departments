@@ -43,16 +43,6 @@ public class ResultHandler<T,E,R,P> {
 			return this.doBusinessLogic(t, entity, mapper, v, expMsg, params, true, start)
 			.apply(t);
 			}
-/*			List<T> dto = entity.map(sub -> {
-				return sub.stream()
-						.map(e-> mapper.apply(e))
-						.collect(Collectors.toList());
-					}).orElseThrow(() -> new BusinessException(expMsg));*/
-			/*T dto = entity.map(e-> mapper.apply(e))
-					.orElseThrow(() -> new BusinessException(expMsg));
-			long end = System.currentTimeMillis();
-			R response = (R) new ResponseDTO(dto, end-start);
-			return response;*/
 			return invalidResponse;
 		};
 	}

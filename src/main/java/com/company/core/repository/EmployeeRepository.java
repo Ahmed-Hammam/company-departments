@@ -10,8 +10,6 @@ import com.company.core.entity.Employee;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long>{
 
-/*	@Query("SELECT d,COUNT(e.id)  FROM Employee e LEFT JOIN e.department d GROUP BY d.name "
-			+ "ORDER BY COUNT(e.id)")*/
 	@Query("SELECT d,COUNT(e.id)  FROM Employee e RIGHT JOIN e.department d GROUP BY d.name "
 			+ "ORDER BY COUNT(e.id) DESC")
 	Optional<List<Object[]>> getDepartmentsOrderByEmployeesCount();

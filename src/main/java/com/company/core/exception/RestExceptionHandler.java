@@ -38,7 +38,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler{
 		BusinessException exception = (BusinessException)e;
 		String errorMessage = null;
 		
-		// validation
 		if(null != exception.getErrorMessage())
 			errorMessage = exception.getErrorMessage();
 		else
@@ -47,7 +46,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler{
 		if(null == errorMessage)
 			errorMessage = env.getProperty("COMPANY000");
 		
-		ErrorResource errorResource = new ErrorResource(exception.getErrorCode(),errorMessage);	// JSON that will be returned
+		ErrorResource errorResource = new ErrorResource(exception.getErrorCode(),errorMessage);
 		return handleExceptionInternal(exception, errorResource, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, webRequest);
 	}
 }
