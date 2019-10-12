@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -20,6 +21,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler{
 	@Autowired
 	private Environment env;
 	
+	@ResponseStatus(code=HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler({Exception.class})
 	protected ResponseEntity<Object> handleGeneralException(Exception e, WebRequest webRequest){
 		LOG.error("general exception occured");
@@ -28,6 +30,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler{
 		return handleExceptionInternal(e, errorResource, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, webRequest);
 	}
 	
+	@ResponseStatus(code=HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler({BusinessException.class})
 	protected ResponseEntity<Object> handleMwasalatyException(Exception e,WebRequest webRequest){
 		LOG.error("custom exception occured");

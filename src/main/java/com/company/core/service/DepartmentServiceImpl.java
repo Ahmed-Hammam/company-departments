@@ -13,6 +13,7 @@ import com.company.core.entity.Department;
 import com.company.core.exception.BusinessException;
 import com.company.core.repository.DepartmentRepository;
 import com.company.core.repository.EmployeeRepository;
+import com.company.core.util.CustomStringUtils;
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService{
@@ -39,6 +40,8 @@ public class DepartmentServiceImpl implements DepartmentService{
 
 	private void isValid(DepartmentDTO dto) throws BusinessException{
 		if(!StringUtils.hasText(dto.getName()))
+			throw new BusinessException("COMPANY003");
+		if(CustomStringUtils.isNumber(dto.getName()))
 			throw new BusinessException("COMPANY003");
 	}
 }

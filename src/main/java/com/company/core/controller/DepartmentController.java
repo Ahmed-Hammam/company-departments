@@ -2,15 +2,11 @@ package com.company.core.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,10 +25,8 @@ import com.company.core.mapper.DepartmentMapper;
 import com.company.core.mapper.DepartmentReportMapper;
 import com.company.core.service.DepartmentService;
 import com.company.core.util.ResultHandler;
-import com.company.core.validator.GetWithParamsValidaor;
-import com.company.core.validator.IRestValidator;
-import com.company.core.validator.PostValidator;
-import com.company.core.validator.RestValidator;
+
+import io.swagger.annotations.ApiImplicitParam;
 
 @RequestMapping("/v0/api/departments")
 @RestController
@@ -53,9 +47,8 @@ public class DepartmentController {
 //	TODO : refactor sort implementation like dzone example 
 	//TODO : provide log
 	//TODO : complete CRUD operation
-	//TODO : connection pool implementation	
-	//TODO : mapper from dto to entity and opposite
-	
+	//TODO ** check swagger
+	//https://www.mkyong.com/spring-boot/spring-rest-validation-example/
 	
 	@Autowired
 	private DepartmentService departmentService;
@@ -72,16 +65,21 @@ public class DepartmentController {
 		return ResponseEntity.ok(response);*/
 		return ResponseEntity.ok(new ResultHandler<DepartmentDTO, Department, ResponseDTO,Void>()
 				.doBusinessLogic(dto, departmentService.addDepartment(dto), 
-						DepartmentMapper.mapEntitytoDTO(), new PostValidator(),"COMPANY008", null)
+						DepartmentMapper.mapEntitytoDTO(), 
+						(reqData, order) -> {if(Objects.isNull(reqData)){
+							throw new BusinessException("COMPANY008");}}
+						,"COMPANY008", null, false , 0)
 				.apply(dto)); 
 	}
 	
 	//A simple report that displays all departments sorted by employees count.
+	@ApiImplicitParam(name = "orderBy", 
+            required = true, 
+            dataType = "string",
+			value = "OrderBy Value that is used to order departments according to employees count"
+			+ ", expected value = employees")
 	@GetMapping
-	public ResponseEntity<ResponseDTO> getDepartmentsReport(@RequestParam("orderBy") String orderBy,
-			@RequestParam(defaultValue="ASC", name="direction", required=false) String direction, 
-			@RequestParam(name="page", defaultValue = "1", required=false) int page,
-			@RequestParam(name="size", defaultValue = "10", required=false) int size){
+	public ResponseEntity<ResponseDTO> getDepartmentsReport(@RequestParam("orderBy") String orderBy){
 		
 		/*long start = System.currentTimeMillis();
 		RestValidator.validateGetWithOrderParams(orderBy,OrderParams.EMPLOYEES_COUNT);
@@ -106,7 +104,11 @@ public class DepartmentController {
 		List<DepartmentReportDTO> depReport = new ArrayList<>();
 		return ResponseEntity.ok(new ResultHandler<List<DepartmentReportDTO>, List<Object[]>, 
 				ResponseDTO,String>().doBusinessLogic(orderBy,depReport, departmentService.getDepartmentsOrderedByEmployeesCount(), 
-						DepartmentReportMapper.mapEntitytoDTO(), new GetWithParamsValidaor()
+						DepartmentReportMapper.mapEntitytoDTO(), 
+						(reqData,orderParam)->{
+							if(Objects.isNull(reqData) || !orderParam.getOrderValue().equals(reqData))
+								throw new BusinessException("COMPANY002");
+						}
 						,"COMPANY008", OrderParams.EMPLOYEES_COUNT).apply(depReport)); 
 	}
 	

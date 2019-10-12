@@ -14,6 +14,7 @@ import com.company.core.entity.Employee;
 import com.company.core.exception.BusinessException;
 import com.company.core.repository.DepartmentRepository;
 import com.company.core.repository.EmployeeRepository;
+import com.company.core.util.CustomStringUtils;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
@@ -38,6 +39,8 @@ public class EmployeeServiceImpl implements EmployeeService{
 
 	private void isValid(EmployeeDTO dto) throws BusinessException{
 		if(!StringUtils.hasText(dto.getName()))
+			throw new BusinessException("COMPANY004");
+		if(CustomStringUtils.isNumber(dto.getName()))
 			throw new BusinessException("COMPANY004");
 		if(dto.getSalary() < 1000)
 			throw new BusinessException("COMPANY005");

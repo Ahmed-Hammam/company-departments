@@ -9,18 +9,19 @@ import com.company.core.entity.Department;
 
 public class DepartmentReportMapper {
 
-	/*public static final Function<Object[],DepartmentReportDTO> mapEntitytoDTO(){
-			return e -> {DepartmentReportDTO reportDTO = new DepartmentReportDTO(
-					((Department) e[0]).getName(),(Long) e[1]);
-				return reportDTO;
-			};
-	}*/
-	
-	public static final Function<List<Object[]>,List<DepartmentReportDTO>> mapEntitytoDTO(){
-		return arr -> arr.stream().map(
-				e->{DepartmentReportDTO reportDTO = new DepartmentReportDTO(
-				((Department) e[0]).getName(),(Long) e[1]);
-			return reportDTO;})
-				.collect(Collectors.toList());
-		}
+	/*
+	 * public static final Function<Object[],DepartmentReportDTO>
+	 * mapEntitytoDTO(){ return e -> {DepartmentReportDTO reportDTO = new
+	 * DepartmentReportDTO( ((Department) e[0]).getName(),(Long) e[1]); return
+	 * reportDTO; }; }
+	 */
+
+	public static final Function<List<Object[]>, List<DepartmentReportDTO>> mapEntitytoDTO() {
+		return arr -> arr.stream().map(e -> {
+			DepartmentReportDTO reportDTO = 
+					new DepartmentReportDTO(((Department) e[0]).getId(),((Department) e[0]).getName(), 
+					(Long) e[1]);
+			return reportDTO;
+		}).collect(Collectors.toList());
+	}
 }
