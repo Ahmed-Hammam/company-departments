@@ -34,37 +34,11 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class DepartmentController {
 
-	// http://localhost:8080/swagger-ui.html
-	// http://localhost:8080/h2
-	
-	// https://www.mkyong.com/spring-boot/spring-rest-validation-example/
-	// https://www.javadevjournal.com/spring-boot/spring-boot-hikari/
-	// https://dzone.com/articles/conditional-pagination-and-sorting-using-restful-w
-	// http://progressivecoder.com/advanced-swagger-configuration-with-spring-boot/
-	// https://www.baeldung.com/properties-with-spring
-	// https://www.baeldung.com/spring-data-sorting
-	// https://stackoverflow.com/questions/25486583/how-to-use-orderby-with-findall-in-spring-data
-	// https://www.callicoder.com/spring-boot-rest-api-tutorial-with-mysql-jpa-hibernate/
-	// https://howtodoinjava.com/spring-boot2/h2-database-example/
-	// https://stackoverflow.com/questions/17431312/difference-between-join-and-join-fetch-in-hibernate
-		
-	//TODO : refactor sort implementation like dzone example 
-	//TODO : provide log
-	//TODO : complete CRUD operation
-	
 	@Autowired
 	private DepartmentService departmentService;
 	
 	@PostMapping(consumes = "application/json")
 	public ResponseEntity<ResponseDTO> addDepartment(@Valid @RequestBody DepartmentDTO dto) {
-		/*long start = System.currentTimeMillis();
-		RestValidator.validatePostRequest(dto);
-		DepartmentDTO depDTO = departmentService.addDepartment(dto)
-				.map(e -> {return new DepartmentDTO(e.getId(),e.getName());})
-				.orElseThrow(() -> new BusinessException("COMPANY008"));
-		long end = System.currentTimeMillis();
-		ResponseDTO response = new ResponseDTO(depDTO, end-start);
-		return ResponseEntity.ok(response);*/
 		log.info("receiving request for adding new department with payload {}",dto);
 		return ResponseEntity.ok(new ResultHandler<DepartmentDTO, Department, ResponseDTO,Void>()
 				.doBusinessLogic(dto, departmentService.addDepartment(dto), 
@@ -83,27 +57,6 @@ public class DepartmentController {
 			+ ", expected value = employees")
 	@GetMapping
 	public ResponseEntity<ResponseDTO> getDepartmentsReport(@RequestParam("orderBy") String orderBy){
-		
-		/*long start = System.currentTimeMillis();
-		RestValidator.validateGetWithOrderParams(orderBy,OrderParams.EMPLOYEES_COUNT);
-		
-		Optional<List<Object[]>> optionalDepartments = 
-				departmentService.getDepartmentsOrderedByEmployeesCount();
-		
-		if(!optionalDepartments.isPresent())
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		
-		List<DepartmentReportDTO> depReport = optionalDepartments.map(departments -> {
-			return departments.stream()
-			.map(e-> {DepartmentReportDTO reportDTO = new DepartmentReportDTO(
-					((Department) e[0]).getName(),(Long) e[1]);
-				return reportDTO;
-			})
-			.collect(Collectors.toList());
-		}).orElseThrow(() -> new BusinessException("COMPANY008"));
-		long end = System.currentTimeMillis();
-		ResponseDTO response = new ResponseDTO(depReport, end-start);
-		return ResponseEntity.ok(response);*/
 		log.info("receiving request for generating departments report ordered by {}",orderBy);
 		List<DepartmentReportDTO> depReport = new ArrayList<>();
 		return ResponseEntity.ok(new ResultHandler<List<DepartmentReportDTO>, List<Object[]>, 

@@ -37,15 +37,6 @@ public class EmployeeController {
 	
 	@PostMapping
 	public ResponseEntity<ResponseDTO> addEmployee(@Valid @RequestBody EmployeeDTO dto) {
-		/*long start = System.currentTimeMillis();
-		RestValidator.validatePostRequest(dto);
-		EmployeeDTO empDTO = employeeService.addEmployee(dto).map(e->{
-			return new EmployeeDTO(e.getId(), e.getName(), e.getSalary(), 
-					new DepartmentDTO(e.getDepartment().getId(),e.getDepartment().getName()));
-		}).orElseThrow(() -> new BusinessException("COMPANY008"));
-		long end = System.currentTimeMillis();
-		ResponseDTO response = new ResponseDTO(empDTO, end-start);
-		return ResponseEntity.ok(response);*/
 		log.info("receiving request for adding new department with payload {}",dto);
 		return ResponseEntity.ok(new ResultHandler<EmployeeDTO, Employee, ResponseDTO,Void>()
 				.doBusinessLogic(dto, employeeService.addEmployee(dto), 
@@ -65,18 +56,6 @@ public class EmployeeController {
 	@GetMapping
 	public ResponseEntity<ResponseDTO> emplyeesReport(
 			@RequestParam(required=true , name="orderBy") String orderBy) {
-		/*long start = System.currentTimeMillis();
-		RestValidator.validateGetWithOrderParams(orderBy,OrderParams.EMPLOYEE_SALARY);
-		List<EmployeeDTO> empDTOs = employeeService.getAllEmployeesOrderedBySalary()
-				.map(employees->{
-					return employees.stream()
-							.map(e-> new EmployeeDTO(e.getId(), e.getName(),e.getSalary(),
-									new DepartmentDTO(e.getDepartment().getId(), e.getDepartment().getName())))
-							.collect(Collectors.toList());
-				}).orElseThrow(() -> new BusinessException("COMPANY008"));
-		long end = System.currentTimeMillis();
-		ResponseDTO response = new ResponseDTO(empDTOs, end-start);
-		return ResponseEntity.ok(response);*/
 		log.info("receiving request for generating employees report ordered by {}",orderBy);
 		List<EmployeeDTO> empDTOs = new ArrayList<>();
 		return ResponseEntity.ok(new ResultHandler<List<EmployeeDTO>, List<Employee>, 

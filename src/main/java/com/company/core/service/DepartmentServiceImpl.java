@@ -29,12 +29,11 @@ public class DepartmentServiceImpl implements DepartmentService{
 	
 	@Override
 	public Optional<Department> addDepartment(DepartmentDTO dto) {
-		log.info("performing add new department ...");
+		log.info("performing add new department");
 		isValid(dto);
-		log.info("valid department data, checking if another department with same name already exist !");
+		log.info("valid data, check if department with the name {} already exist",dto.getName());
 		if(Objects.nonNull(departmentRepo.findByName(dto.getName())))
 			throw new BusinessException("COMPANY009");
-		
 		return Optional.of(departmentRepo.save(new Department(dto.getName()))); 
 	}
 
