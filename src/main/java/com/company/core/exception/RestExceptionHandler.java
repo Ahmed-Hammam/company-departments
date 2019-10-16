@@ -32,7 +32,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler{
 	
 	@ResponseStatus(code=HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler({BusinessException.class})
-	protected ResponseEntity<Object> handleMwasalatyException(Exception e,WebRequest webRequest){
+	protected ResponseEntity<Object> handleBusinessException(Exception e,WebRequest webRequest){
 		LOG.error("custom exception occured");
 		LOG.error(e.getMessage());
 		BusinessException exception = (BusinessException)e;
